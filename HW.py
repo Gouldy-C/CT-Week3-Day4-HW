@@ -32,10 +32,8 @@ def age_country(file_name):
     with open(file_name) as f:
         data = f.readlines()
 
-    correct = re.compile(
-        '[A-Za-z]+ [A-Za-z]+, [0-9]{1,3}, ([A-Za-z]+ [A-Za-z]+|[A-Za-z]+)$')
-    age = re.compile(', [0-9]{1,3}')
-    country = re.compile(', ([A-Za-z]+ [A-Za-z]+|[A-Za-z]+)$')
+    correct = re.compile('[A-Za-z]+ [A-Za-z]+, [0-9]{1,3}, ([A-Za-z]+ [A-Za-z]+|[A-Za-z]+)$')
+    age_cou = re.compile('(, [0-9]{1,3})(, ([A-Za-z]+ [A-Za-z]+|[A-Za-z]+))$')
 
     correct_lst = [correct.match(x) for x in data]
 
@@ -43,9 +41,7 @@ def age_country(file_name):
         if i == None:
             print('Invalid record')
         else:
-            a = age.search(i[0])
-            c = country.search(i[0])
-            print(f'Age: {a[0].strip(", ")}, Country: {c[0].strip(", ")}')
-
+            a = age_cou.findall(i[0])
+            print(f'Age: {a[0][0].strip(", ")}, Country: {a[0][1].strip(", ")}')
 
 age_country('Homework/user_records.txt')
