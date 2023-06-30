@@ -26,22 +26,26 @@ Your output should look something like this:
 -Add a count for the number of valid and invalid records.
 '''
 import re
+correct = re.compile('[A-Za-z]+ [A-Za-z]+, [0-9]{1,3}, ([A-Za-z]+ [A-Za-z]+|[A-Za-z]+)$')
+age_cou = re.compile('(, [0-9]{1,3})(, ([A-Za-z]+ [A-Za-z]+|[A-Za-z]+))$')
 
-
-def age_country(file_name):
+def age_country(file_name, cor_pat, ac_pat):
     with open(file_name) as f:
         data = f.readlines()
-
-    correct = re.compile('[A-Za-z]+ [A-Za-z]+, [0-9]{1,3}, ([A-Za-z]+ [A-Za-z]+|[A-Za-z]+)$')
-    age_cou = re.compile('(, [0-9]{1,3})(, ([A-Za-z]+ [A-Za-z]+|[A-Za-z]+))$')
-
-    correct_lst = [correct.match(x) for x in data]
-
+    
+    correct_lst = [cor_pat.match(x) for x in data]
+    invalid_count = 0
+    valid_count = 0
+    
     for i in correct_lst:
         if i == None:
+            invalid_count += 1
             print('Invalid record')
         else:
-            a = age_cou.findall(i[0])
+            valid_count += 1
+            a = ac_pat.findall(i[0])
             print(f'Age: {a[0][0].strip(", ")}, Country: {a[0][1].strip(", ")}')
 
-age_country('Homework/user_records.txt')
+    print(f'Valid line(s): {valid_count}, Invalid line(s): {invalid_count}')
+
+age_country('Homework/user_records.txt', correct, age_cou)
